@@ -4,7 +4,7 @@
 #include <cstdint>
 #include<vector>
 #include<random>
-
+//Functions to pretty print maps and vectors
 template<typename T>
 void display(std::vector<T> &in){
 	for(const auto& x:in){
@@ -21,6 +21,8 @@ void display(std::unordered_map<U,V> &in){
 	std::cout<<std::endl;
 
 }
+
+//Create some dummy data initializers
 class DataInitializer{
 	public:
 		virtual void initialize() = 0;
@@ -57,7 +59,7 @@ class RandomDataInitializer:public DataInitializer{
 		};
 };
 
-
+//Our meaty tensor class
 class Tensor{
 	private:
 //		cutensorMgHandle_t handle ;
@@ -71,17 +73,29 @@ class Tensor{
 	public:
 		//Tensor() = default;
 		Tensor(const  std::unordered_map<int32_t,int64_t>  &extents,const std::vector<int32_t> &modes,const std::unordered_map<int32_t,int64_t> &blocksizes,std::unordered_map<int32_t,int32_t> &devicecounts){
+		
+		//Commented out, will add cutensorMghandles later
+
 		//Tensor(const cutensorMgHandle_t &handle,const  std::unordered_map<int32_t,int64_t>&& extents,const std::unordered_map<int32_t,int64_t>&& modes,const std::unordered_map<int32_t,int64_t>&& blocksizes,std::vector<int32_t> deviceCount){
 		//this->handle = handle;
 		
 		
 		this->modes = modes;
+		//Take references to common set of maps,extents,devices counts
+		//Populate for each specific tensor using info of modes.
+		
 		for(auto &mode:modes){
 			this->extents.push_back(extents.at(mode));
 			this->blocksizes.push_back(blocksizes.at(mode));
 			this->deviceCount.push_back(devicecounts.at(mode));
 		}	
 		}
+
+		//Take input data.
+		//
+		//TODO: 
+		//memcpy..
+		//
 		void set_data(std::vector<float> &data){
 			this->h_data=data;
 		}
